@@ -1,0 +1,364 @@
+﻿#include <stdio.h>
+#include <time.h>
+#include <stdlib.h>
+#include <locale.h>
+#include <iostream>
+#include <stack> 
+#include <queue>
+using namespace std;
+
+struct node {
+	int numb;
+	node* next;
+};
+struct graf {
+	node** nodes;
+	int size;
+};
+
+stack <int> path_order;
+
+void Johny_Depp(int** a, int* dist, int current_vertex, int size, int path_length) {
+	dist[current_vertex] = path_length;
+	for (int i = 0; i < size; i++) {
+		if (a[current_vertex][i] != 0 && dist[i] > path_length + 1) {
+			Johny_Depp(a, dist, i, size, path_length + 1);
+		}
+	}
+}
+
+void Craigslist(graf* grafon, int* dist, int current_vertex, int size, int path_length) {
+	dist[current_vertex] = path_length;
+	node* temp = grafon->nodes[current_vertex];
+	while (temp != NULL) {
+		if (dist[temp->numb] > path_length + 1) {
+			Craigslist(grafon, dist, temp->numb, size, path_length + 1);
+		}
+		temp = temp->next;
+	}
+}
+
+int deep(int** a, int* versh, int current_vertex, int destination_vertex, int size, int path_length, int shortest_path) {
+	path_order.push(current_vertex);
+
+	versh[current_vertex] = 1;
+	for (int i = 0; i < size; i++) {
+		if (path_length > shortest_path)
+			break;
+		if (a[current_vertex][i] != 0 && versh[i] != 1) {
+			if (i == destination_vertex) {
+				if (shortest_path > path_length+1)
+					shortest_path = path_length+1;
+				break;
+			}
+			if (path_length+1 >= shortest_path)
+				break;
+			shortest_path = deep(a, versh ,i,destination_vertex, size, path_length+1, shortest_path);
+		}
+	}
+
+	while (path_order.top() != current_vertex) {
+		versh[path_order.top()] = 0;
+		path_order.pop();
+	}
+
+	return shortest_path;
+}
+
+void Google_search(int** a, int num, int* dist, int size) {
+	queue <int> q;
+	dist[num] = 0;
+	q.push(num);
+	while (!q.empty()) {
+		num = q.front();
+		q.pop();
+		for (int i = 0; i < size; i++) {
+			if (a[num][i] == 1 && dist[i]==-1) {
+				q.push(i);
+				dist[i] = dist[num] + 1;
+			}
+		}
+	}
+}
+
+void Google_search_spis(graf* grafon, int num, int* dist, int size) {
+	queue <int> q;
+	node* buff;
+	dist[num] = 0;
+	q.push(num);
+	while (!q.empty()) {
+		num = q.front();
+		buff = grafon->nodes[num];
+		q.pop();
+		while(buff != NULL ) {
+			if (dist[buff->numb] == -1) {
+				q.push(buff->numb);
+				dist[buff->numb] = dist[num] + 1;
+			}
+			buff = buff->next;
+		}
+	}
+}
+//int deepDarkAss(graf* grafon, int current_vertex, int destination_vertex, int path_length, int shortest_path, int* versh) {
+//	node* buf = grafon->nodes[current_vertex];
+//	versh[current_vertex] = 1;
+//
+//	while (buf != NULL) {
+//		if (versh[buf->numb] == 0) {
+//			if (buf->numb == destination_vertex) {
+//				if (shortest_path > path_length + 1)
+//					shortest_path = path_length + 1;
+//				break;
+//			}
+//			int* versh_next = new int[grafon->size];
+//			for (int count = 0; count < grafon->size; ++count)
+//				versh_next[count] = versh[count];
+//			deepDarkAss(grafon, buf->numb, destination_vertex, path_length + 1, shortest_path, versh_next);
+//		}
+//		buf = buf->next;
+//	}
+//	return shortest_path;
+//}
+
+//void norec(int** a, int current_vertex, int destination_vertex, int shortest_path, int* versh, int size) {
+//	stack <int> steck;
+//	stack <int> path_order;
+//	steck.push(current_vertex);
+//	int i = 0;
+//	int path_length = 0;
+//	while (!steck.empty()) {
+//		current_vertex = steck.top();
+//		versh[current_vertex] = 1;
+//		path_order.push(current_vertex);
+//		path_length++;
+//		for (int i = 0; i < size; i++) {
+//			if (a[current_vertex][i] != 0 && versh[i] != 1) {
+//				if (a[current_vertex][i] != 0 && versh[i] != 1) {
+//					if (i == destination_vertex)
+//						if (shortest_path > path_length+1)
+//							shortest_path = path_length+1;
+//					else
+//						steck.push(i);
+//				}
+//			}
+//		}
+//		if (current_vertex == steck.top()) {
+//			steck.pop();
+//			while (steck.top() != path_order.top()) {
+//				versh[path_order.top()] = 0;
+//				path_order.pop();
+//				path_length--;
+//			}
+//		}
+//	}
+//}
+
+
+int norec(int** a, int current_vertex, int destination_vertex, int size) {
+	stack <int> steck;
+	steck.push(current_vertex);
+	int path_length=0, i, shortest_path=INT_MAX;
+	while (!steck.empty()) {
+		for (i = 0; i < size; i++) {
+			if (a[current_vertex][i] != 0 && shortest_path > path_length + 1) {
+				if (destination_vertex == i) {
+					i = size;
+					shortest_path = path_length+1;
+				}
+				else {
+					steck.push(current_vertex);
+					current_vertex = i;
+					path_length++;
+				}
+				break;
+			}
+		}
+
+		if (i == size) {
+			path_length--;
+			current_vertex = steck.top();
+			steck.pop();
+		}
+	}
+	return shortest_path;
+}
+
+graf* sozdat(int versh) {
+
+	graf* grafon = new graf;
+	grafon->size = versh;
+	grafon->nodes = new node * [versh];
+	for (int i = 0; i < versh; i++) {
+		grafon->nodes[i] = NULL;
+	}
+	return grafon;
+}
+node* sozdatnode(int index) {
+	node* newnode = new node;
+	newnode->numb = index;
+	newnode->next = NULL;
+	return newnode;
+}
+
+void addgran(graf* grafon, int from, int to) {
+	node* newnode = sozdatnode(from);
+	if (grafon->nodes[to] == 0) {
+		grafon->nodes[to] = newnode;
+		newnode = NULL;
+	}
+	node* buf = grafon->nodes[to];
+	while (buf->next != NULL) {
+		buf = buf->next;
+	}
+	buf->next = newnode;
+
+	newnode = sozdatnode(to);
+	if (grafon->nodes[from] == 0) {
+		grafon->nodes[from] = newnode;
+		return;
+	}
+	buf = grafon->nodes[from];
+	while (buf->next != NULL) {
+		buf = buf->next;
+	}
+	buf->next = newnode;
+}
+void main() {
+	srand(time(0));
+	setlocale(LC_ALL, "Russian");
+	int size;
+
+	cout << "   Введите размерность матрицы: " << " ";
+	cin >> size;
+	cout << endl;
+
+	int** arr = new int* [size];
+	for (int count = 0; count < size; ++count)
+		arr[count] = new int[size];
+	for (int row = 0; row < size; row++) {
+		arr[row][row] = 0;
+		for (int col = row + 1; col < size; col++) {
+			arr[row][col] = rand() % 2;
+			if (arr[row][col] != 1)
+				arr[row][col] = 0;
+			arr[col][row] = arr[row][col];
+		}
+	}
+	/*cout << "   ";
+	for (int row = 0; row < size; row++)
+	{
+		for (int col = 0; col < size; col++) {
+			cout << arr[row][col] << " ";
+		}
+		cout << endl << "   ";
+	}
+	cout << endl;
+	cout << endl;*/
+
+	graf* grafon = sozdat(size);
+	int j = 1;
+	for (int i = 0; i < size; i++) {
+		for (j; j < size; j++) {
+			if (arr[i][j] == 1) {
+				addgran(grafon, i, j);
+			}
+		}
+		j = j - size + i + 1;
+	}
+	cout << "   ";
+	//for (int i = 0; i < size; i++) {
+	//	node* temp = grafon->nodes[i];
+	//	cout << i << " ";
+
+	//	while (temp) {
+	//		cout << " -> " << temp->numb;
+	//		temp = temp->next;
+	//	}
+	//	cout << endl << "   ";
+	//}
+auto distG = new int[size];
+	for (int i = 0; i < size; i++)
+		distG[i] = -1;
+	cout << "   Введите номер вершины, с которой хотите начать обход: ";
+	int start;
+	cin >> start;
+	cout << endl << "   ";
+	clock_t start_t, end;
+	start_t = clock();
+	Google_search(arr, start, distG, size);
+	end = clock();
+	for (int i = 0; i < size; i++)
+		if (distG[i] == -1)
+			cout << " Кратчайший путь до вершины " << i << " = " << 0 << endl;
+		else
+		cout << " Кратчайший путь до вершины " << i << " = " << distG[i] << endl;
+
+	cout << endl << endl << "   " << "Время выполнения операции поиска в ширину составляет " << (double)difftime(end, start_t) / CLOCKS_PER_SEC << endl << endl << "   ";
+	//////////////////////////////////////////////////////////////////
+	for (int i = 0; i < size; i++)
+		distG[i] = -1;
+	cout << "   Введите номер вершины, с которой хотите начать обход: ";
+	 start;
+	cin >> start;
+	cout << endl << "   ";
+
+	Google_search_spis(grafon, start, distG, size);
+	for (int i = 0; i < size; i++)
+		if(distG[i]== -1)
+			cout << " Кратчайший путь до вершины " << i << " = " << 0 << endl;
+		else
+		cout << " Кратчайший путь до вершины " << i << " = " << distG[i] << endl;
+
+
+		cout << "   Введите номер вершины, с которой хотите начать обход: ";
+		int num, destination_vertex, shortest_path;
+		cin >> num;
+		cout << endl;
+/////////////////////////////////////////////////////////////
+		cout << "Поиск кратчайшего пути реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
+
+		int* dist = new int[size];
+		for (int count = 0; count < size; ++count)
+			dist[count] = INT_MAX;
+		
+		start_t = clock();
+		Johny_Depp(arr, dist, num, size, 0);
+		end = clock();
+		
+		for (int count = 0; count < size; ++count) {
+			if (dist[count] == INT_MAX)
+				dist[count] = 0;
+			cout << endl << "Кратчайший путь до вершины  " << count << " = "<< dist[count];
+		}
+	cout << endl << endl << "   " << "Время выполнения операции поиска в глубину составляет " << (double)difftime(end, start_t) / CLOCKS_PER_SEC << endl << endl << "   ";
+
+/////////////////////////////////////////////////////////////
+
+		cout << endl << "Поиск кратчайшего пути реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
+		int* versh = new int[size];
+		for (int count = 0; count < size; ++count)
+			versh[count] = 0;
+
+
+		cout << endl << "Поиск кратчайшего пути в графе, представленным через список, реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
+
+		for (int count = 0; count < size; ++count)
+			dist[count] = INT_MAX;
+
+		Craigslist(grafon, dist, num, size, 0);
+
+		for (int count = 0; count < size; ++count) {
+			if (dist[count] == INT_MAX)
+				dist[count] = 0;
+			cout << endl << "Кратчайший путь до вершины  " << count << " = " << dist[count];
+		}
+
+		/*shortest_path = deep(arr, versh, num, destination_vertex, size, 0, INT_MAX);
+		cout << endl << shortest_path;*/
+
+/////////////////////////////////////////////////////////////
+
+		/*shortest_path = norec(arr,num, destination_vertex, size);
+		cout << endl << shortest_path;*/
+
+}
