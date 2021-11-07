@@ -154,22 +154,18 @@ void Google_search_spis(graf* grafon, int num, int* dist, int size) {
 //}
 
 
-int norec(int** a, int current_vertex, int destination_vertex, int size) {
+void norec(int** a, int* dist, int current_vertex, int size) {
 	stack <int> steck;
+	int path_length=0, i;
 	steck.push(current_vertex);
-	int path_length=0, i, shortest_path=INT_MAX;
-	while (!steck.empty()) {
+	dist[current_vertex] = 0;
+	do{
 		for (i = 0; i < size; i++) {
-			if (a[current_vertex][i] != 0 && shortest_path > path_length + 1) {
-				if (destination_vertex == i) {
-					i = size;
-					shortest_path = path_length+1;
-				}
-				else {
-					steck.push(current_vertex);
-					current_vertex = i;
-					path_length++;
-				}
+			if (a[current_vertex][i] != 0 && dist[i] > path_length + 1) {
+				dist[i] = path_length + 1;
+				steck.push(current_vertex);
+				current_vertex = i;
+				path_length++;
 				break;
 			}
 		}
@@ -179,8 +175,7 @@ int norec(int** a, int current_vertex, int destination_vertex, int size) {
 			current_vertex = steck.top();
 			steck.pop();
 		}
-	}
-	return shortest_path;
+	} while (!steck.empty());
 }
 
 graf* sozdat(int versh) {
@@ -227,6 +222,7 @@ void main() {
 	srand(time(0));
 	setlocale(LC_ALL, "Russian");
 	int size;
+	int num, destination_vertex, shortest_path;
 
 	cout << "   Введите размерность матрицы: " << " ";
 	cin >> size;
@@ -244,7 +240,7 @@ void main() {
 			arr[col][row] = arr[row][col];
 		}
 	}
-	/*cout << "   ";
+	cout << "   ";
 	for (int row = 0; row < size; row++)
 	{
 		for (int col = 0; col < size; col++) {
@@ -253,7 +249,7 @@ void main() {
 		cout << endl << "   ";
 	}
 	cout << endl;
-	cout << endl;*/
+	cout << endl;
 
 	graf* grafon = sozdat(size);
 	int j = 1;
@@ -311,7 +307,7 @@ auto distG = new int[size];
 
 
 		cout << "   Введите номер вершины, с которой хотите начать обход: ";
-		int num, destination_vertex, shortest_path;
+		
 		cin >> num;
 		cout << endl;
 /////////////////////////////////////////////////////////////
@@ -356,9 +352,19 @@ auto distG = new int[size];
 		/*shortest_path = deep(arr, versh, num, destination_vertex, size, 0, INT_MAX);
 		cout << endl << shortest_path;*/
 
-/////////////////////////////////////////////////////////////
-
-		/*shortest_path = norec(arr,num, destination_vertex, size);
-		cout << endl << shortest_path;*/
-
+///////////////////////////////////////////////////////////////
+	/*	int num, destination_vertex, shortest_path;
+		int* dist = new int[size];
+		for (int count = 0; count < size; ++count)
+			dist[count] = INT_MAX;
+		cout << "   Введите номер вершины, с которой хотите начать обход: ";													//
+		cin >> num;																												// norec рабочий
+		cout << endl;																											//
+		norec(arr,dist,num, size);
+		for (int count = 0; count < size; ++count) {
+			if (dist[count] == INT_MAX)
+				dist[count] = 0;
+			cout << endl << "Кратчайший путь до вершины  " << count << " = " << dist[count];
+		}*/
+///////////////////////////////////////////////////////////////
 }
