@@ -224,7 +224,7 @@ void main() {
 	int size;
 	int num, destination_vertex, shortest_path;
 
-	cout << "   Введите размерность матрицы: " << " ";
+	cout << "   Введите размерность матрицы: ";
 	cin >> size;
 	cout << endl;
 
@@ -249,7 +249,6 @@ void main() {
 		cout << endl << "   ";
 	}
 	cout << endl;
-	cout << endl;
 
 	graf* grafon = sozdat(size);
 	int j = 1;
@@ -261,49 +260,49 @@ void main() {
 		}
 		j = j - size + i + 1;
 	}
-	cout << "   ";
-	//for (int i = 0; i < size; i++) {
-	//	node* temp = grafon->nodes[i];
-	//	cout << i << " ";
+	/*cout << "   ";
+	for (int i = 0; i < size; i++) {
+		node* temp = grafon->nodes[i];
+		cout << i << " ";
 
-	//	while (temp) {
-	//		cout << " -> " << temp->numb;
-	//		temp = temp->next;
-	//	}
-	//	cout << endl << "   ";
-	//}
+		while (temp) {
+			cout << " -> " << temp->numb;
+			temp = temp->next;
+		}
+		cout << endl << "   ";
+	}*/
 auto distG = new int[size];
 	for (int i = 0; i < size; i++)
 		distG[i] = -1;
 	cout << "   Введите номер вершины, с которой хотите начать обход: ";
 	int start;
 	cin >> start;
-	cout << endl << "   ";
+	/*cout << endl << "   ";*/
 	clock_t start_t, end;
 	start_t = clock();
 	Google_search(arr, start, distG, size);
 	end = clock();
 	for (int i = 0; i < size; i++)
 		if (distG[i] == -1)
-			cout << " Кратчайший путь до вершины " << i << " = " << 0 << endl;
+			cout << "   Кратчайший путь до вершины " << i << " = " << 0 << endl;
 		else
-		cout << " Кратчайший путь до вершины " << i << " = " << distG[i] << endl;
+		cout << "   Кратчайший путь до вершины " << i << " = " << distG[i] << endl;
 
 	cout << endl << endl << "   " << "Время выполнения операции поиска в ширину составляет " << (double)difftime(end, start_t) / CLOCKS_PER_SEC << endl << endl << "   ";
 	//////////////////////////////////////////////////////////////////
 	for (int i = 0; i < size; i++)
 		distG[i] = -1;
-	cout << "   Введите номер вершины, с которой хотите начать обход: ";
+	cout << "Введите номер вершины, с которой хотите начать обход: ";
 	 start;
 	cin >> start;
-	cout << endl << "   ";
+	/*cout << endl << "   ";*/
 
 	Google_search_spis(grafon, start, distG, size);
 	for (int i = 0; i < size; i++)
 		if(distG[i]== -1)
-			cout << " Кратчайший путь до вершины " << i << " = " << 0 << endl;
+			cout << "   Кратчайший путь до вершины " << i << " = " << 0 << endl;
 		else
-		cout << " Кратчайший путь до вершины " << i << " = " << distG[i] << endl;
+		cout << "   Кратчайший путь до вершины " << i << " = " << distG[i] << endl;
 
 
 		cout << "   Введите номер вершины, с которой хотите начать обход: ";
@@ -311,7 +310,7 @@ auto distG = new int[size];
 		cin >> num;
 		cout << endl;
 /////////////////////////////////////////////////////////////
-		cout << "Поиск кратчайшего пути реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
+		cout << "   Поиск кратчайшего пути, реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
 
 		int* dist = new int[size];
 		for (int count = 0; count < size; ++count)
@@ -324,19 +323,19 @@ auto distG = new int[size];
 		for (int count = 0; count < size; ++count) {
 			if (dist[count] == INT_MAX)
 				dist[count] = 0;
-			cout << endl << "Кратчайший путь до вершины  " << count << " = "<< dist[count];
+			cout << endl << "   Кратчайший путь до вершины " << count << " = "<< dist[count];
 		}
-	cout << endl << endl << "   " << "Время выполнения операции поиска в глубину составляет " << (double)difftime(end, start_t) / CLOCKS_PER_SEC << endl << endl << "   ";
+	cout << endl << endl << "   Время выполнения операции поиска в глубину составляет " << (double)difftime(end, start_t) / CLOCKS_PER_SEC << endl << endl << "   ";
 
 /////////////////////////////////////////////////////////////
 
-		cout << endl << "Поиск кратчайшего пути реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
+		cout << endl << "   Поиск кратчайшего пути, реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
 		int* versh = new int[size];
 		for (int count = 0; count < size; ++count)
 			versh[count] = 0;
 
 
-		cout << endl << "Поиск кратчайшего пути в графе, представленным через список, реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
+		cout << endl << "   Поиск кратчайшего пути в графе, представленным через список, реализованный на основе алгоритма поиска в глубину с использованием рекурсии";
 
 		for (int count = 0; count < size; ++count)
 			dist[count] = INT_MAX;
@@ -346,7 +345,7 @@ auto distG = new int[size];
 		for (int count = 0; count < size; ++count) {
 			if (dist[count] == INT_MAX)
 				dist[count] = 0;
-			cout << endl << "Кратчайший путь до вершины  " << count << " = " << dist[count];
+			cout << endl << "   Кратчайший путь до вершины " << count << " = " << dist[count];
 		}
 
 		/*shortest_path = deep(arr, versh, num, destination_vertex, size, 0, INT_MAX);
